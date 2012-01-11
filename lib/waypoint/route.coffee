@@ -55,16 +55,4 @@ regifyString = (str, params) ->
 
   new RegExp("^#{str}$")
 
-Route.get = (uri, callback) ->
-  new Route
-    uri : uri
-    method : 'GET'
-    callback : callback
-
-Route.post = (uri, callback) ->
-  new Route
-    uri : uri
-    method : 'POST'
-    callback : callback
-
 exports.Route = Route

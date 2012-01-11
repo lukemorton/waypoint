@@ -9,8 +9,8 @@ router.route new Route 'GET', '/', -> console.log '/'
 router.route 'GET', '/', -> console.log '/'
 
 # Add route with Route instance shorthand
-router.route Route.get('/home', -> console.log('/home'))
-router.route Route.post('/contact', -> console.log('POST:/contact'))
+router.get  '/home',    -> console.log '/home'
+router.post '/contact', -> console.log 'POST:/contact'
 
 # Match GET /
 router.dispatch '/'

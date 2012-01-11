@@ -22,6 +22,9 @@ class Router
     else
       route = new Route(method, uri, callback)
     @routes.push route
+
+  get : (uri, callback) -> @route('GET',  uri, callback)
+  post: (uri, callback) -> @route('POST', uri, callback)
   
   routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
