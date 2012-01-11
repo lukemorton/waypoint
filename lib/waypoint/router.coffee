@@ -28,7 +28,7 @@ class Router
   
   routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
-      [uri, method] = parseMethodUri(uri)
+      [uri, method] = extractUriAndMethod(uri)
       uri = baseUri+uri
 
       if typeof callback is 'function' or Array.isArray(callback)
@@ -57,10 +57,14 @@ class Router
     @notFound()
     false
 
-parseMethodUri = (uri) ->
+extractUriAndMethod = (uri) ->    
   matches = uri.match(/^(GET|POST) (.+)/)
-  method = matches[1] if matches and matches[1]
-  uri = matches[2] if matches and matches[2]
-  [uri, method]
+  
+  if matches and matches.length?
+    ret = matches[1..2].reverse()
+    method or= 'GET'
+  else
+    ret = [uri or '', 'GET']
+  ret
 
 exports.Router = Router
