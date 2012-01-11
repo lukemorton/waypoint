@@ -1,12 +1,14 @@
 class Route
-  constructor: (config) ->
-    @regex = config.uri if config.uri?
-    @regex = regifyString(@regex, {}) unless @regex instanceof RegExp
+  constructor: (method, uri, callback) ->
+    unless callback?
+      callback = uri
+      uri = method
+      method = 'GET'
 
-    @method = config.method.toUpperCase() if config.method?
-    @method or= 'GET'
+    @regex = regifyString(uri, {}) unless uri instanceof RegExp
 
-    @callback = config.callback if config.callback?
+    @method = method.toUpperCase()
+    @callback = callback if callback?
 
   match: (request) ->
     return no if request.method? and @method isnt request.method.toUpperCase()

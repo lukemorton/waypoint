@@ -14,9 +14,11 @@ class Router
   baseUri: ''
   routes: []
 
-  route: (route) ->
-    unless route instanceof Route
-      route = new Route(route)
+  route: (method, uri, callback) ->
+    if method instanceof Route
+      route = method
+    else
+      route = new Route(method, uri, callback)
     @routes.push route
   
   routeMap: (map, baseUri = @baseUri) ->
@@ -25,10 +27,7 @@ class Router
       uri = baseUri+uri
 
       if typeof callback is 'function' or Array.isArray(callback)
-        @route
-          uri: uri
-          method: method
-          callback: callback
+        @route(method, uri, callback)
       else if typeof callback is 'object'
         @routeMap(callback, uri)
       else

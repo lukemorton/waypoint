@@ -4,13 +4,10 @@ var Route = waypoint.Route;
 
 var router = new Router({
 	'routes' : [
-		new Route({
-			'uri' : '/home/:a',
-			'callback' : function (a) {
-				console.log('root', a);
-			}
+		new Route('/home/:a', function (a) {
+			console.log('root', a);
 		})
-	]
+	],
 });
 
 router.dispatch('/home/bob');

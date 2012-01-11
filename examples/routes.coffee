@@ -3,17 +3,10 @@ router = new waypoint.Router
 Route = waypoint.Route
 
 # Add route with Route instance
-route = new Route
-  uri      : '/'
-  method   : 'get'
-  callback : -> console.log '/'
-router.route route
+router.route new Route 'GET', '/', -> console.log '/'
 
-# Add route with plain object
-router.route
-  uri      : '/'
-  method   : 'get'
-  callback : -> console.log '/'
+# Add route with args
+router.route 'GET', '/', -> console.log '/'
 
 # Add route with Route instance shorthand
 router.route Route.get('/home', -> console.log('/home'))
@@ -32,8 +25,8 @@ router.dispatch
 
 # Multiple routes
 router.routes = [
-  Route.get '/path',    -> console.log('path')
-  Route.get '/another', -> console.log('another')
+  new Route 'GET', '/path',    -> console.log 'path'
+  new Route 'GET', '/another', -> console.log 'another'
 ]
 
 router.dispatch '/path'
