@@ -112,23 +112,19 @@ require['./router'] = new function () {
 
     function Router(config) {
       if (config) {
-        if (config.routes != null) this.routes(config.routes);
+        if (config.routes != null) this.routes = config.routes;
+        if (config.routeMap != null) this.routeMap(config.routeMap);
         if (config.baseUri != null) this.baseUri = config.baseUri;
       }
     }
 
     Router.prototype.baseUri = '';
 
-    Router.prototype._routes = [];
-
-    Router.prototype.routes = function(routes) {
-      if (routes != null) this._routes = routes;
-      return this._routes;
-    };
+    Router.prototype.routes = [];
 
     Router.prototype.route = function(route) {
       if (!(route instanceof Route)) route = new Route(route);
-      return this._routes.push(route);
+      return this.routes.push(route);
     };
 
     Router.prototype.routeMap = function(map, baseUri) {
@@ -162,7 +158,7 @@ require['./router'] = new function () {
           method: 'get'
         };
       }
-      _ref = this.routes();
+      _ref = this.routes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         route = _ref[_i];
         matches = route.match(request);
