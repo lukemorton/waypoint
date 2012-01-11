@@ -61,10 +61,10 @@ extractUriAndMethod = (uri) ->
   matches = uri.match(/^(GET|POST) (.+)/)
   
   if matches and matches.length?
-    ret = matches[1..2].reverse()
+    [uri, method] = matches[1..2].reverse()
     method or= 'GET'
+    [uri, method]
   else
-    ret = [uri or '', 'GET']
-  ret
+    [uri or '', 'GET']
 
 exports.Router = Router
