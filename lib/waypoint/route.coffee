@@ -10,9 +10,14 @@ class Route
     @method = method.toUpperCase()
     @callback = callback if callback?
 
-  match: (request) ->
-    return no if request.method? and @method isnt request.method.toUpperCase()
-    matches = @regex.exec(request.uri)
+  match: (method, uri) ->
+    unless uri?
+      uri = method
+      method = null
+
+    return no if method? and @method isnt method.toUpperCase()
+
+    matches = @regex.exec(uri)
     return matches[1..] if matches and matches.length?
     no
 

@@ -33,14 +33,9 @@ class Router
       else
         throw 'Map must be string array or object'
 
-  dispatch: (request) ->
-    if typeof request == 'string'
-      request =
-        uri: request
-        method: 'get'
-      
+  dispatch: (method, uri) ->
     for route in @routes
-      matches = route.match(request)
+      matches = route.match(method, uri)
       unless matches
         continue
 
