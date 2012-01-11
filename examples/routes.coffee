@@ -31,7 +31,7 @@ router.dispatch
   'method' : 'post'
 
 # Multiple routes
-router.routes [
+router.routes = [
   Route.get '/path',    -> console.log('path')
   Route.get '/another', -> console.log('another')
 ]
