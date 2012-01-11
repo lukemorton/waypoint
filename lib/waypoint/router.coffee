@@ -6,8 +6,11 @@ unless Array.isArray
 
 class Router
   constructor: (config) ->
-    @routes(config.routes) if config and config.routes?
+    if config
+      @routes(config.routes) if config.routes?
+      @baseUri = config.baseUri if config.baseUri?
 
+  baseUri: ''
   _routes: []
 
   routes: (routes) ->
@@ -19,10 +22,10 @@ class Router
       route = new Route(route)
     @_routes.push route
   
-  routeMap: (map, rootUri = '') ->
+  routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
       [uri, method] = parseMethodUri(uri)
-      uri = rootUri+uri
+      uri = baseUri+uri
 
       if typeof callback is 'function' or Array.isArray(callback)
         @route
