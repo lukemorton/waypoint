@@ -1,6 +1,6 @@
 waypoint = require '../lib/waypoint'
 router = new waypoint.Router
-  match: 'start'
+  baseUri: '/'
 
 # A simple controller object
 simpleController =
@@ -11,25 +11,25 @@ simpleController =
   'contact'     : ()   -> console.log 'contact'
   'logout'      : ()   -> console.log 'logging out'
   'redirect'    : (uri)->
-    () ->
+    ()->
       console.log 'redirected to', uri
 
 # Use routeMap to generate and add routes to router
 router.routeMap
-  '/' : simpleController.index
-  '/about' : simpleController.about
+  '' : simpleController.index
+  'about' : simpleController.about
 
-  '/products' :
+  'products' :
     # Nested routes are sugar
     ''     : simpleController.redirect('/products/all')
     '/all' : simpleController.allProducts
     '/:id' : simpleController.aProduct
 
   # Match a POST request for /contact
-  'POST /contact' : simpleController.contact
+  'POST contact' : simpleController.contact
 
   # Multiple callbacks supported as array
-  '/logout' : [
+  'logout' : [
     simpleController.logout
     simpleController.redirect('/')
   ]

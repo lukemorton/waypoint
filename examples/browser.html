@@ -7,11 +7,13 @@
 		<a href="testing">Testing</a>
 		<a href="alt">Alt</a>
 		<script src="vendor/jquery.min.js"></script>
-		<script src="../dist/waypoint.js"></script>
+		<script src="../dist/waypoint-0.1.0.js"></script>
 		<script>
 			jQuery(function ($) {
 				var Router = waypoint.Router,
-					router = new Router(),
+					router = new Router({
+						'baseUri' : window.location.pathname.replace('/browser.html', '')
+					}),
 					$content = $('#content'),
 					firstPop = true,
 					dispatch = function () {
@@ -24,16 +26,14 @@
 				// Create a route map so that we can set
 				// callbacks for different URIs
 				router.routeMap({
-					'/examples' : {
-						'/browser.html' : function () {
-							$content.html('Default content');
-						},
-						'/testing' : function () {
-							$content.html('testing');
-						},
-						'/alt' : function () {
-							$content.html('alt');
-						}
+					'/browser.html' : function () {
+						$content.html('Default content');
+					},
+					'/testing' : function () {
+						$content.html('testing');
+					},
+					'/alt' : function () {
+						$content.html('alt');
 					}
 				});
 
