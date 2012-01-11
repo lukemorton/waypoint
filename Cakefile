@@ -13,9 +13,9 @@ header = """
 """
 
 getVersion = -> JSON.parse(fs.readFileSync('./package.json')).version
+rmTmp = -> exec "rm -rf #{tmp}"
 
 task 'build:browser', 'Create a browser edition of Waypoint', ->
-  getVersion();
   code = ''
   for name in ['route', 'router']
     exec "mkdir -p #{tmp}"
@@ -27,6 +27,7 @@ task 'build:browser', 'Create a browser edition of Waypoint', ->
       };
 
     """
+  rmTmp()
   
   code = """
     !function (definition) {
@@ -60,3 +61,4 @@ task 'build:browser', 'Create a browser edition of Waypoint', ->
 
 task 'clean', 'Delete distribution folder', ->
   exec "rm -rf #{dist}"
+  rmTmp()
