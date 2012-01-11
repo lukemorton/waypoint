@@ -7,20 +7,17 @@ unless Array.isArray
 class Router
   constructor: (config) ->
     if config
-      @routes(config.routes) if config.routes?
+      @routes = config.routes if config.routes?
+      @routeMap(config.routeMap) if config.routeMap?
       @baseUri = config.baseUri if config.baseUri?
 
   baseUri: ''
-  _routes: []
-
-  routes: (routes) ->
-    @_routes = routes if routes?
-    @_routes
+  routes: []
 
   route: (route) ->
     unless route instanceof Route
       route = new Route(route)
-    @_routes.push route
+    @routes.push route
   
   routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
@@ -43,7 +40,7 @@ class Router
         uri: request
         method: 'get'
       
-    for route in @routes()
+    for route in @routes
       matches = route.match(request)
       unless matches
         continue
