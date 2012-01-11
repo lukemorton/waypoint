@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div id="content">Loading...</div>
+		<a href="testing">Testing</a>
+		<a href="alt">Alt</a>
+		<script src="vendor/jquery.min.js"></script>
+		<script src="../dist/waypoint.js"></script>
+		<script>
+			jQuery(function ($) {
+				var Router = waypoint.Router,
+					router = new Router(),
+					$content = $('#content'),
+					firstPop = true,
+					dispatch = function () {
+						var path = window.location.pathname;
+						window.console && window.console.log(path);
+						router.dispatch(path);
+						firstPop = false;
+					};
+				
+				// Create a route map so that we can set
+				// callbacks for different URIs
+				router.routeMap({
+					'/examples' : {
+						'/browser.html' : function () {
+							$content.html('Default content');
+						},
+						'/testing' : function () {
+							$content.html('testing');
+						},
+						'/alt' : function () {
+							$content.html('alt');
+						}
+					}
+				});
+
+				// Dispatch when back/forward buttons used
+				$(window).on('popstate', dispatch);
+
+				// popstate not triggered after domload for
+				// Firefox so we check ourselves if firstPop
+				setTimeout(function () { firstPop && dispatch() }, 50);
+
+				// Listen and override all <a> elements
+				$(window).on('click', 'a', function (e) {
+					e.preventDefault();
+					window.history.pushState(null, null, this.href);
+					dispatch();
+				});
+			});
+		</script>
+	</body>
+</html>
