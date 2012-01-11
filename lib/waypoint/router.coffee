@@ -7,9 +7,10 @@ unless Array.isArray
 class Router
   constructor: (config) ->
     if config
-      @routes = config.routes if config.routes?
-      @routeMap(config.routeMap) if config.routeMap?
-      @baseUri = config.baseUri if config.baseUri?
+      for key in ['routes', 'baseUri', 'notFound']
+        @[key] = config[key] if config[key]?
+
+      @routeMap(config.routeMap)  if config.routeMap?
 
   baseUri: ''
   routes: []
