@@ -21,16 +21,9 @@ class Route
     return matches[1..] if matches and matches.length?
     no
 
-# Helper function for expanding "named" matches 
-# (e.g. `:dog`, etc.) against the given set 
-# of params:
-# 
-#    {
-#      ':dog': function (str) { 
-#        return str.replace(/:dog/, 'TARGET');
-#      }
-#      ...
-#    }
+# The following methods are CoffeeScript ports of JS from
+# the Director router.
+# See: https://github.com/flatiron/director
 paramifyString = (str, params, mod) ->
   mod = str
 
@@ -41,8 +34,6 @@ paramifyString = (str, params, mod) ->
   
   if mod is str then '([a-zA-Z0-9-]+)' else mod
 
-# Helper function for expanding wildcards (*) and 
-# "named" matches (:whatever)
 regifyString = (str, params) ->
   if str.indexOf '*' isnt -1
     str = str.replace /\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)'
