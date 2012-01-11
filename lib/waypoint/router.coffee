@@ -14,6 +14,7 @@ class Router
 
   baseUri: ''
   routes: []
+  notFound: (-> )
 
   route: (method, uri, callback) ->
     if method instanceof Route
@@ -49,6 +50,8 @@ class Router
         c.apply(route, matches)
 
       return true
+
+    @notFound()
     false
 
 parseMethodUri = (uri) ->

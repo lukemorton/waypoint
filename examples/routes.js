@@ -8,6 +8,10 @@ var router = new Router({
 			console.log('root', a);
 		})
 	],
+	'notFound' : function () {
+		console.log('No route was matched');
+	}
 });
 
 router.dispatch('/home/bob');
+router.dispatch('/non-existent');
