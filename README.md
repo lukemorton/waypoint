@@ -1,6 +1,18 @@
 # Waypoint
 
-A CoffeeScript URI router for use anywhere.
+A CoffeeScript URI router for use anywhere. The main aim of
+waypoint is to decouple the URI parsing from any kind of
+automatic dispatching.
+
+For example Director is a JS router that works both client
+side and server side. It listens in the browser for URI
+changes and runs the route callbacks for any matching routes.
+On node it can respond to a Request object.
+
+For waypoint I didn't want to include this behaviour so that
+you are free to use what ever you want. In the browser you
+could use History.js. On the server you could use a completely
+custom solution. It's up to you.
 
 ## In the browser
 
