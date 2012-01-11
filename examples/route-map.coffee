@@ -2,36 +2,24 @@ waypoint = require '../lib/waypoint'
 router = new waypoint.Router
   baseUri: '/'
 
-# A simple controller object
-simpleController =
-  'index'       : ()   -> console.log 'index'
-  'about'       : ()   -> console.log 'about'
-  'allProducts' : ()   -> console.log 'all products'
-  'aProduct'    : (id) -> console.log 'product: ', id
-  'contact'     : ()   -> console.log 'contact'
-  'logout'      : ()   -> console.log 'logging out'
-  'redirect'    : (uri)->
-    ()->
-      console.log 'redirected to', uri
-
 # Use routeMap to generate and add routes to router
 router.routeMap
-  '' : simpleController.index
-  'about' : simpleController.about
+  ''      : -> console.log('index')
+  'about' : -> console.log('about')
 
   'products' :
     # Nested routes are sugar
-    ''     : simpleController.redirect('/products/all')
-    '/all' : simpleController.allProducts
-    '/:id' : simpleController.aProduct
+    ''     : -> console.log('redirected to', '/products/all')
+    '/all' : -> console.log('all products')
+    '/:id' : (id) -> console.log('product: ', id)
 
   # Match a POST request for /contact
-  'POST contact' : simpleController.contact
+  'POST contact' : -> console.log('contact')
 
   # Multiple callbacks supported as array
   'logout' : [
-    simpleController.logout
-    simpleController.redirect('/')
+    -> console.log('logging out')
+    -> console.log('redirected to', '/')
   ]
 
 router.dispatch '/'
