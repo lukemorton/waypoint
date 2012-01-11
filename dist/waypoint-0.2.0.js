@@ -18,22 +18,25 @@
 
   Route = (function() {
 
-    function Route(config) {
-      if (config.uri != null) this.regex = config.uri;
-      if (!(this.regex instanceof RegExp)) {
-        this.regex = regifyString(this.regex, {});
+    function Route(method, uri, callback) {
+      if (callback == null) {
+        callback = uri;
+        uri = method;
+        method = 'GET';
       }
-      if (config.method != null) this.method = config.method.toUpperCase();
-      this.method || (this.method = 'GET');
-      if (config.callback != null) this.callback = config.callback;
+      if (!(uri instanceof RegExp)) this.regex = regifyString(uri, {});
+      this.method = method.toUpperCase();
+      if (callback != null) this.callback = callback;
     }
 
-    Route.prototype.match = function(request) {
+    Route.prototype.match = function(method, uri) {
       var matches;
-      if ((request.method != null) && this.method !== request.method.toUpperCase()) {
-        return false;
+      if (uri == null) {
+        uri = method;
+        method = null;
       }
-      matches = this.regex.exec(request.uri);
+      if ((method != null) && this.method !== method.toUpperCase()) return false;
+      matches = this.regex.exec(uri);
       if (matches && (matches.length != null)) return matches.slice(1);
       return false;
     };
@@ -74,22 +77,6 @@
     return new RegExp("^" + str + "$");
   };
 
-  Route.get = function(uri, callback) {
-    return new Route({
-      uri: uri,
-      method: 'GET',
-      callback: callback
-    });
-  };
-
-  Route.post = function(uri, callback) {
-    return new Route({
-      uri: uri,
-      method: 'POST',
-      callback: callback
-    });
-  };
-
   exports.Route = Route;
 
 }).call(this);
@@ -98,7 +85,7 @@
 require['./router'] = new function () {
   var exports = this;
   (function() {
-  var Route, Router, parseMethodUri;
+  var Route, Router, extractUriAndMethod;
 
   Route = require('./route').Route;
 
@@ -111,10 +98,14 @@ require['./router'] = new function () {
   Router = (function() {
 
     function Router(config) {
+      var key, _i, _len, _ref;
       if (config) {
-        if (config.routes != null) this.routes = config.routes;
+        _ref = ['routes', 'baseUri', 'notFound'];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          key = _ref[_i];
+          if (config[key] != null) this[key] = config[key];
+        }
         if (config.routeMap != null) this.routeMap(config.routeMap);
-        if (config.baseUri != null) this.baseUri = config.baseUri;
       }
     }
 
@@ -122,9 +113,24 @@ require['./router'] = new function () {
 
     Router.prototype.routes = [];
 
-    Router.prototype.route = function(route) {
-      if (!(route instanceof Route)) route = new Route(route);
+    Router.prototype.notFound = (function() {});
+
+    Router.prototype.route = function(method, uri, callback) {
+      var route;
+      if (method instanceof Route) {
+        route = method;
+      } else {
+        route = new Route(method, uri, callback);
+      }
       return this.routes.push(route);
+    };
+
+    Router.prototype.get = function(uri, callback) {
+      return this.route('GET', uri, callback);
+    };
+
+    Router.prototype.post = function(uri, callback) {
+      return this.route('POST', uri, callback);
     };
 
     Router.prototype.routeMap = function(map, baseUri) {
@@ -133,14 +139,10 @@ require['./router'] = new function () {
       _results = [];
       for (uri in map) {
         callback = map[uri];
-        _ref = parseMethodUri(uri), uri = _ref[0], method = _ref[1];
+        _ref = extractUriAndMethod(uri), uri = _ref[0], method = _ref[1];
         uri = baseUri + uri;
         if (typeof callback === 'function' || Array.isArray(callback)) {
-          _results.push(this.route({
-            uri: uri,
-            method: method,
-            callback: callback
-          }));
+          _results.push(this.route(method, uri, callback));
         } else if (typeof callback === 'object') {
           _results.push(this.routeMap(callback, uri));
         } else {
@@ -150,18 +152,12 @@ require['./router'] = new function () {
       return _results;
     };
 
-    Router.prototype.dispatch = function(request) {
+    Router.prototype.dispatch = function(method, uri) {
       var c, callbacks, matches, route, _i, _j, _len, _len2, _ref;
-      if (typeof request === 'string') {
-        request = {
-          uri: request,
-          method: 'get'
-        };
-      }
       _ref = this.routes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         route = _ref[_i];
-        matches = route.match(request);
+        matches = route.match(method, uri);
         if (!matches) continue;
         if (Array.isArray(route.callback)) {
           callbacks = route.callback;
@@ -174,6 +170,7 @@ require['./router'] = new function () {
         }
         return true;
       }
+      this.notFound();
       return false;
     };
 
@@ -181,12 +178,16 @@ require['./router'] = new function () {
 
   })();
 
-  parseMethodUri = function(uri) {
-    var matches, method;
+  extractUriAndMethod = function(uri) {
+    var matches, method, _ref;
     matches = uri.match(/^(GET|POST) (.+)/);
-    if (matches && matches[1]) method = matches[1];
-    if (matches && matches[2]) uri = matches[2];
-    return [uri, method];
+    if (matches && (matches.length != null)) {
+      _ref = matches.slice(1, 3).reverse(), uri = _ref[0], method = _ref[1];
+      method || (method = 'GET');
+      return [uri, method];
+    } else {
+      return [uri || '', 'GET'];
+    }
   };
 
   exports.Router = Router;
