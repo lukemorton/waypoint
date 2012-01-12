@@ -1,7 +1,7 @@
 {
   "author": "Luke Morton <lukemorton.designs@gmail.com> (http://lukemorton.co.uk)",
   "name": "waypoint",
-  "description": "Browser and server side routing",
+  "description": "Waypoint provides browser and server side routing",
   "version": "0.2.2",
   "homepage": "http://github.com/DrPheltRight/waypoint",
   "repository": {
