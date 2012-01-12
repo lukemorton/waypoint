@@ -1,5 +1,6 @@
 // Waypoint: Browser Edition
 // Written by Luke Morton, MIT licensed.
+// https://github.com/DrPheltRight/waypoint
 !function (definition) {
   if (typeof define === 'function' && define.amd) {
     define(definition);
@@ -14,9 +15,10 @@
   require['./route'] = new function () {
   var exports = this;
   (function() {
-  var Route, paramifyString, regifyString;
+  var Route;
 
   Route = (function() {
+    var paramifyString, regifyString;
 
     function Route(method, uri, callback) {
       if (callback == null) {
@@ -28,6 +30,38 @@
       this.method = method.toUpperCase();
       if (callback != null) this.callback = callback;
     }
+
+    paramifyString = function(str, params, mod) {
+      var param, _i, _len;
+      mod = str;
+      for (_i = 0, _len = params.length; _i < _len; _i++) {
+        param = params[_i];
+        if (params.hasOwnProperty(param)) {
+          mod = params[param](str);
+          if (mod !== str) break;
+        }
+      }
+      if (mod === str) {
+        return '([a-zA-Z0-9-]+)';
+      } else {
+        return mod;
+      }
+    };
+
+    regifyString = function(str, params) {
+      var capture, captures, _i, _len;
+      if (str.indexOf('*' !== -1)) {
+        str = str.replace(/\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)');
+      }
+      captures = str.match(/:([^\/]+)/ig);
+      if (captures) {
+        for (_i = 0, _len = captures.length; _i < _len; _i++) {
+          capture = captures[_i];
+          str = str.replace(capture, paramifyString(capture, params));
+        }
+      }
+      return new RegExp("^" + str + "$");
+    };
 
     Route.prototype.match = function(method, uri) {
       var matches;
@@ -45,38 +79,6 @@
 
   })();
 
-  paramifyString = function(str, params, mod) {
-    var param, _i, _len;
-    mod = str;
-    for (_i = 0, _len = params.length; _i < _len; _i++) {
-      param = params[_i];
-      if (params.hasOwnProperty(param)) {
-        mod = params[param](str);
-        if (mod !== str) break;
-      }
-    }
-    if (mod === str) {
-      return '([a-zA-Z0-9-]+)';
-    } else {
-      return mod;
-    }
-  };
-
-  regifyString = function(str, params) {
-    var capture, captures, _i, _len;
-    if (str.indexOf('*' !== -1)) {
-      str = str.replace(/\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)');
-    }
-    captures = str.match(/:([^\/]+)/ig);
-    if (captures) {
-      for (_i = 0, _len = captures.length; _i < _len; _i++) {
-        capture = captures[_i];
-        str = str.replace(capture, paramifyString(capture, params));
-      }
-    }
-    return new RegExp("^" + str + "$");
-  };
-
   exports.Route = Route;
 
 }).call(this);
@@ -85,7 +87,7 @@
 require['./router'] = new function () {
   var exports = this;
   (function() {
-  var Route, Router, extractUriAndMethod;
+  var Route, Router;
 
   Route = require('./route').Route;
 
@@ -96,6 +98,7 @@ require['./router'] = new function () {
   }
 
   Router = (function() {
+    var extractUriAndMethod;
 
     function Router(config) {
       var key, _i, _len, _ref;
@@ -131,6 +134,18 @@ require['./router'] = new function () {
 
     Router.prototype.post = function(uri, callback) {
       return this.route('POST', uri, callback);
+    };
+
+    extractUriAndMethod = function(uri) {
+      var matches, method, _ref;
+      matches = uri.match(/^(GET|POST) (.+)/);
+      if (matches && (matches.length != null)) {
+        _ref = matches.slice(1, 3).reverse(), uri = _ref[0], method = _ref[1];
+        method || (method = 'GET');
+        return [uri, method];
+      } else {
+        return [uri || '', 'GET'];
+      }
     };
 
     Router.prototype.routeMap = function(map, baseUri) {
@@ -177,18 +192,6 @@ require['./router'] = new function () {
     return Router;
 
   })();
-
-  extractUriAndMethod = function(uri) {
-    var matches, method, _ref;
-    matches = uri.match(/^(GET|POST) (.+)/);
-    if (matches && (matches.length != null)) {
-      _ref = matches.slice(1, 3).reverse(), uri = _ref[0], method = _ref[1];
-      method || (method = 'GET');
-      return [uri, method];
-    } else {
-      return [uri || '', 'GET'];
-    }
-  };
 
   exports.Router = Router;
 
