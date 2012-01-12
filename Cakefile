@@ -10,6 +10,7 @@ dist = './dist'
 header = """
   // Waypoint: Browser Edition
   // Written by Luke Morton, MIT licensed.
+  // https://github.com/DrPheltRight/waypoint
 """
 
 getVersion = -> JSON.parse(fs.readFileSync('./package.json')).version
