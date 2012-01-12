@@ -13,9 +13,6 @@ header = """
   // https://github.com/DrPheltRight/waypoint
 """
 
-getVersion = -> JSON.parse(fs.readFileSync('./package.json')).version
-
-
 task 'build', 'Create a browser edition of Waypoint', ->
   invoke 'clean'
   exec [
@@ -56,7 +53,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
       });
     """
 
-    version = getVersion()
+    version = JSON.parse(fs.readFileSync('./package.json')).version
     console.log "Building Waypoint #{version}"
     
     exec "mkdir -p #{dist}", ->
