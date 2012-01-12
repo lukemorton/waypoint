@@ -25,6 +25,16 @@ class Router
 
   get : (uri, callback) -> @route('GET',  uri, callback)
   post: (uri, callback) -> @route('POST', uri, callback)
+
+  extractUriAndMethod = (uri) ->    
+    matches = uri.match(/^(GET|POST) (.+)/)
+    
+    if matches and matches.length?
+      [uri, method] = matches[1..2].reverse()
+      method or= 'GET'
+      [uri, method]
+    else
+      [uri or '', 'GET']
   
   routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
@@ -56,15 +66,5 @@ class Router
 
     @notFound()
     false
-
-extractUriAndMethod = (uri) ->    
-  matches = uri.match(/^(GET|POST) (.+)/)
-  
-  if matches and matches.length?
-    [uri, method] = matches[1..2].reverse()
-    method or= 'GET'
-    [uri, method]
-  else
-    [uri or '', 'GET']
 
 exports.Router = Router
