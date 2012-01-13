@@ -15,7 +15,6 @@ class Route
   # See: https://github.com/flatiron/director
   paramifyString = (str, params, mod) ->
     mod = str
-
     for param in params
       if params.hasOwnProperty(param)
         mod = params[param](str)
@@ -31,7 +30,7 @@ class Route
         
     if captures
       for capture in captures
-        str = str.replace capture, paramifyString(capture, params)
+        str = str.replace(capture, paramifyString(capture, params))
 
     new RegExp("^#{str}$")
 
