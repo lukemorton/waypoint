@@ -1,4 +1,4 @@
-// Waypoint: Browser Edition
+// Waypoint: Browser Edition v0.2.3
 // Written by Luke Morton, MIT licensed.
 // https://github.com/DrPheltRight/waypoint
 !function (definition) {
