@@ -6,9 +6,10 @@ CoffeeScript = require 'coffee-script'
 lib = './lib'
 tmp = './tmp'
 dist = './dist'
+version = JSON.parse(fs.readFileSync('./package.json')).version
 
 header = """
-  // Waypoint: Browser Edition
+  // Waypoint: Browser Edition v#{version}
   // Written by Luke Morton, MIT licensed.
   // https://github.com/DrPheltRight/waypoint
 """
