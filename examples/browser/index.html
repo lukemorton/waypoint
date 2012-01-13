@@ -8,18 +8,16 @@
 		<a href="alt">Alt</a>
 		<a href="not-found">Not found</a>
 		<a href="alt/example">Alt example</a>
-		<script src="vendor/jquery.min.js"></script>
-		<script src="../dist/waypoint-0.2.2.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/waypoint.min.js"></script>
 		<script>
 			jQuery(function ($) {
 				var $content = $('#content'),
-					baseUri = window.location.pathname.replace('/browser.html', ''),
 					router = new waypoint.Router({
-						'baseUri' : baseUri,
-						'routeMap': {
+						routeMap : {
 							// Create a route map so that we can set
 							// callbacks for different URIs
-							'/browser.html' : function () {
+							'/' : function () {
 								$content.html('Default content');
 							},
 							'/testing' : function () {
@@ -34,7 +32,7 @@
 								}
 							}
 						},
-						'notFound': function () {
+						notFound : function () {
 							$content.html('Not found');
 						}
 					}),

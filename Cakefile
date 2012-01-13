@@ -6,6 +6,8 @@ CoffeeScript = require 'coffee-script'
 lib = './lib'
 tmp = './tmp'
 dist = './dist'
+eg = './examples'
+
 version = JSON.parse(fs.readFileSync('./package.json')).version
 
 header = """
@@ -54,7 +56,6 @@ task 'build', 'Create a browser edition of Waypoint', ->
       });
     """
 
-    version = JSON.parse(fs.readFileSync('./package.json')).version
     console.log "Building Waypoint #{version}"
     
     exec "mkdir -p #{dist}", ->
@@ -62,6 +63,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
 
       code = uglify.gen_code uglify.ast_squeeze uglify.ast_mangle parser.parse code
       fs.writeFileSync "#{dist}/waypoint-#{version}.min.js", header + '\n' + code
+      fs.writeFileSync "#{eg}/browser/js/waypoint.min.js", header + '\n' + code
 
 task 'clean', 'Delete distribution folder', ->
   exec "rm -rf #{dist}"
