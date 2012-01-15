@@ -1,4 +1,4 @@
-var waypoint = require('../lib/waypoint');
+var waypoint = require('../../lib/waypoint');
 var Router = waypoint.Router;
 var Route = waypoint.Route;
 

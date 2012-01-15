@@ -1,4 +1,4 @@
-waypoint = require '../lib/waypoint'
+waypoint = require '../../lib/waypoint'
 router = new waypoint.Router
 
 # Add route with Route instance
@@ -22,8 +22,8 @@ router.dispatch('POST', '/contact')
 
 # Multiple routes
 router.routes = [
-  new Route('GET', '/path',    -> console.log 'path')
-  new Route('GET', '/another', -> console.log 'another')
+  new waypoint.Route('GET', '/path',    -> console.log 'path')
+  new waypoint.Route('GET', '/another', -> console.log 'another')
 ]
 
 router.dispatch('/path')

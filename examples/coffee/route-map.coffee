@@ -1,4 +1,4 @@
-waypoint = require '../lib/waypoint'
+waypoint = require '../../lib/waypoint'
 router = new waypoint.Router
   baseUri: '/'
 
