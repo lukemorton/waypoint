@@ -11,10 +11,8 @@ class Router
         @[key] = config[key] if config[key]?
 
       @routeMap(config.routeMap)  if config.routeMap?
-
-  baseUri: ''
-  routes: []
-  notFound: (-> )
+    @routes  or= []
+    @baseUri or= ''
 
   route: (method, uri, callback) ->
     if method instanceof Route
@@ -64,7 +62,7 @@ class Router
 
       return true
 
-    @notFound()
+    @notFound() if @notFound?
     false
 
 exports.Router = Router
