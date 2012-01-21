@@ -10,8 +10,10 @@ class Router
       for key in ['routes', 'baseUri', 'notFound']
         @[key] = config[key] if config[key]?
 
-      @routeMap(config.routeMap)  if config.routeMap?
+      routeMap = config.routeMap if config.routeMap?
+      
     @routes  or= []
+    @routeMap(routeMap) if routeMap?
     @baseUri or= ''
 
   route: (method, uri, callback) ->
