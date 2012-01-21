@@ -48,23 +48,23 @@ class Router
       else
         throw 'Map must be string array or object'
 
-  dispatch: (method, uri) ->
+  dispatch: (method, uri, scope = {}) ->
     for route in @routes
       matches = route.match(method, uri)
       unless matches
         continue
 
-      if Array.isArray(route.callback)
+      if Array.isArray(route.callback) 
         callbacks = route.callback
       else
         callbacks = [route.callback]
 
       for c in callbacks
-        c.apply(route, matches)
+        c.apply(scope, matches)
 
       return true
 
-    @notFound() if @notFound?
+    @notFound.call(scope) if @notFound?
     false
 
 exports.Router = Router
