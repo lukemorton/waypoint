@@ -1,4 +1,4 @@
-// Waypoint: Browser Edition v0.2.4
+// Waypoint: Browser Edition v0.2.5
 // Written by Luke Morton, MIT licensed.
 // https://github.com/DrPheltRight/waypoint
 !function (definition) {
@@ -101,16 +101,17 @@ require['./router'] = new function () {
     var extractUriAndMethod;
 
     function Router(config) {
-      var key, _i, _len, _ref;
+      var key, routeMap, _i, _len, _ref;
       if (config) {
         _ref = ['routes', 'baseUri', 'notFound'];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           key = _ref[_i];
           if (config[key] != null) this[key] = config[key];
         }
-        if (config.routeMap != null) this.routeMap(config.routeMap);
+        if (config.routeMap != null) routeMap = config.routeMap;
       }
       this.routes || (this.routes = []);
+      if (routeMap != null) this.routeMap(routeMap);
       this.baseUri || (this.baseUri = '');
     }
 
