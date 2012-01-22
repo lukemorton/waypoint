@@ -31,7 +31,7 @@ If you wanted to build the master version you can simply
 checkout that branch.
 
 Now you can use the browser edition as shown in
-`example/browser.html`. It is AMD, CommonJS and global
+`examples/browser`. It is AMD, CommonJS and global
 compatible so include it how you wish.
 
 ## On the server
@@ -57,11 +57,15 @@ router.routeMap({
 	},
 	'/:name': function (name) {
 		console.log('Hello', name);
+	},
+	'POST /process': function () {
+		console.log('POST request');
 	}
 })
 
 router.dispatch('/');
 router.dispatch('/Bob');
+router.dispatch('POST', '/process');
 ```
 
 ## Contributing
