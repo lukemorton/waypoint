@@ -1,4 +1,4 @@
-// Waypoint: Browser Edition v0.2.7
+// Waypoint: Browser Edition v0.2.8
 // Written by Luke Morton, MIT licensed.
 // https://github.com/DrPheltRight/waypoint
 !function (definition) {
@@ -9,11 +9,11 @@
   }
 }(function () {
   function require(path) {
-    return require[path];
+    return require[path].exports;
   }
 
   require['./route'] = new function () {
-  var exports = this;
+  var module = this;
   (function() {
   var Route;
 
@@ -21,12 +21,11 @@
     var paramifyString, regifyString;
 
     function Route(method, uri, callback) {
-      if (callback == null) {
-        callback = uri;
-        uri = method;
-        method = 'GET';
+      if (uri instanceof RegExp) {
+        this.regex = uri;
+      } else {
+        this.regex = regifyString(uri, {});
       }
-      if (!(uri instanceof RegExp)) this.regex = regifyString(uri, {});
       this.method = method.toUpperCase();
       if (callback != null) this.callback = callback;
     }
@@ -78,17 +77,17 @@
 
   })();
 
-  exports.Route = Route;
+  module.exports = Route;
 
 }).call(this);
 
 };
 require['./router'] = new function () {
-  var exports = this;
+  var module = this;
   (function() {
   var Route, Router, isArray;
 
-  Route = require('./route').Route;
+  Route = require('./route');
 
   isArray = Array.isArray;
 
@@ -102,7 +101,7 @@ require['./router'] = new function () {
     function Router(config) {
       var key, routeMap, _i, _len, _ref;
       if (config) {
-        _ref = ['routes', 'baseUri', 'notFound'];
+        _ref = ['routes', 'baseUri', 'notFound', 'multi'];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           key = _ref[_i];
           if (config[key] != null) this[key] = config[key];
@@ -111,12 +110,13 @@ require['./router'] = new function () {
       }
       this.routes || (this.routes = []);
       this.baseUri || (this.baseUri = '');
+      this.multi || (this.multi = false);
       if (routeMap != null) this.routeMap(routeMap);
     }
 
     Router.prototype.route = function(method, uri, callback) {
       var route;
-      if (method instanceof Route) {
+      if (typeof method === 'object') {
         route = method;
       } else {
         route = new Route(method, uri, callback);
@@ -164,12 +164,14 @@ require['./router'] = new function () {
     };
 
     Router.prototype.dispatch = function(method, uri, scope) {
-      var c, callbacks, matches, route, _i, _j, _len, _len2, _ref;
+      var c, callbacks, hasMatched, matches, route, _i, _j, _len, _len2, _ref;
       if (scope == null) scope = {};
+      hasMatched = false;
       _ref = this.routes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         route = _ref[_i];
         if (!(matches = route.match(method, uri))) continue;
+        hasMatched = true;
         if (isArray(route.callback)) {
           callbacks = route.callback;
         } else {
@@ -179,17 +181,19 @@ require['./router'] = new function () {
           c = callbacks[_j];
           c.apply(scope, matches);
         }
-        return true;
+        if (!this.multi) break;
       }
-      if (this.notFound != null) this.notFound.call(scope);
-      return false;
+      if ((this.notFound != null) && hasMatched === false) {
+        this.notFound.call(scope);
+      }
+      return hasMatched;
     };
 
     return Router;
 
   })();
 
-  exports.Router = Router;
+  module.exports = Router;
 
 }).call(this);
 
@@ -197,7 +201,7 @@ require['./router'] = new function () {
 
 
   return {
-    'Route' : require('./route').Route,
-    'Router' : require('./router').Router,
+    'Route' : require('./route'),
+    'Router': require('./router'),
   };
 });
