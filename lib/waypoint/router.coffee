@@ -26,7 +26,7 @@ class Router
   get : (uri, callback) -> @route('GET',  uri, callback)
   post: (uri, callback) -> @route('POST', uri, callback)
 
-  extractUriAndMethod = (uri) ->    
+  extractUriAndMethod = (uri) ->
     matches = uri.match(/^(GET|POST) (.+)/)
     
     if matches and matches.length?
