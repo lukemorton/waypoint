@@ -1,4 +1,4 @@
-Route = require('./route').Route
+Route = require('./route')
 
 isArray = Array.isArray
 isArray or= ((obj) -> Object.prototype.toString.call(obj) is '[object Array]')    
@@ -65,4 +65,4 @@ class Router
     @notFound.call(scope) if @notFound?
     return false
 
-exports.Router = Router
+module.exports = Router

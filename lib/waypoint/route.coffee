@@ -43,4 +43,4 @@ class Route
     return matches[1..] if matches and matches.length?
     return no
 
-exports.Route = Route
+module.exports = Route

@@ -28,7 +28,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
     for name in ['route', 'router']
         code += """
           require['./#{name}'] = new function () {
-            var exports = this;
+            var module = this;
             #{fs.readFileSync "#{tmp}/#{name}.js"}
           };
 
@@ -44,14 +44,14 @@ task 'build', 'Create a browser edition of Waypoint', ->
         }
       }(function () {
         function require(path) {
-          return require[path];
+          return require[path].exports;
         }
 
         #{code}
 
         return {
-          'Route' : require('./route').Route,
-          'Router' : require('./router').Router,
+          'Route' : require('./route'),
+          'Router': require('./router'),
         };
       });
     """
