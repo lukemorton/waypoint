@@ -40,7 +40,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
         if (typeof define === 'function' && define.amd) {
           define(definition);
         } else {
-          this.waypoint = definition();
+          this.Waypoint = definition();
         }
       }(function () {
         function require(path) {

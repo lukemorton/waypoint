@@ -49,7 +49,7 @@ normal:
 
 ``` js
 var waypoint = require('waypoint'),
-	router = new waypoint.Router;
+	router = new Waypoint.Router;
 
 router.routeMap({
 	'/' : function () {

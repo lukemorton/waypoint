@@ -1,6 +1,6 @@
-var waypoint = require('../../lib/waypoint');
-var Router = waypoint.Router;
-var Route = waypoint.Route;
+var Waypoint = require('../../lib/waypoint');
+var Router = Waypoint.Router;
+var Route = Waypoint.Route;
 
 var router = new Router({
 	'routes' : [

@@ -1,5 +1,5 @@
-waypoint = require '../../lib/waypoint'
-router = new waypoint.Router
+Waypoint = require('../../lib/waypoint')
+router = new Waypoint.Router
   baseUri: '/'
 
 # Use routeMap to generate and add routes to router
