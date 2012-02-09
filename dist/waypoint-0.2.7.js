@@ -1,11 +1,11 @@
-// Waypoint: Browser Edition v0.2.6
+// Waypoint: Browser Edition v0.2.7
 // Written by Luke Morton, MIT licensed.
 // https://github.com/DrPheltRight/waypoint
 !function (definition) {
   if (typeof define === 'function' && define.amd) {
     define(definition);
   } else {
-    this.waypoint = definition();
+    this.Waypoint = definition();
   }
 }(function () {
   function require(path) {
@@ -50,11 +50,10 @@
 
     regifyString = function(str, params) {
       var capture, captures, _i, _len;
-      if (str.indexOf('*' !== -1)) {
+      if (str.indexOf('*') !== -1) {
         str = str.replace(/\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)');
       }
-      captures = str.match(/:([^\/]+)/ig);
-      if (captures) {
+      if (captures = str.match(/:([^\/]+)/ig)) {
         for (_i = 0, _len = captures.length; _i < _len; _i++) {
           capture = captures[_i];
           str = str.replace(capture, paramifyString(capture, params));
@@ -87,15 +86,15 @@
 require['./router'] = new function () {
   var exports = this;
   (function() {
-  var Route, Router;
+  var Route, Router, isArray;
 
   Route = require('./route').Route;
 
-  if (!Array.isArray) {
-    Array.isArray = function(obj) {
-      return Object.prototype.toString.call(obj) === '[object Array]';
-    };
-  }
+  isArray = Array.isArray;
+
+  isArray || (isArray = (function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  }));
 
   Router = (function() {
     var extractUriAndMethod;
@@ -111,8 +110,8 @@ require['./router'] = new function () {
         if (config.routeMap != null) routeMap = config.routeMap;
       }
       this.routes || (this.routes = []);
-      if (routeMap != null) this.routeMap(routeMap);
       this.baseUri || (this.baseUri = '');
+      if (routeMap != null) this.routeMap(routeMap);
     }
 
     Router.prototype.route = function(method, uri, callback) {
@@ -122,7 +121,8 @@ require['./router'] = new function () {
       } else {
         route = new Route(method, uri, callback);
       }
-      return this.routes.push(route);
+      this.routes.push(route);
+      return this;
     };
 
     Router.prototype.get = function(uri, callback) {
@@ -146,22 +146,21 @@ require['./router'] = new function () {
     };
 
     Router.prototype.routeMap = function(map, baseUri) {
-      var callback, method, uri, _ref, _results;
+      var callback, method, uri, _ref;
       if (baseUri == null) baseUri = this.baseUri;
-      _results = [];
       for (uri in map) {
         callback = map[uri];
         _ref = extractUriAndMethod(uri), uri = _ref[0], method = _ref[1];
         uri = baseUri + uri;
-        if (typeof callback === 'function' || Array.isArray(callback)) {
-          _results.push(this.route(method, uri, callback));
+        if (typeof callback === 'function' || isArray(callback)) {
+          this.route(method, uri, callback);
         } else if (typeof callback === 'object') {
-          _results.push(this.routeMap(callback, uri));
+          this.routeMap(callback, uri);
         } else {
           throw 'Map must be string array or object';
         }
       }
-      return _results;
+      return this;
     };
 
     Router.prototype.dispatch = function(method, uri, scope) {
@@ -170,9 +169,8 @@ require['./router'] = new function () {
       _ref = this.routes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         route = _ref[_i];
-        matches = route.match(method, uri);
-        if (!matches) continue;
-        if (Array.isArray(route.callback)) {
+        if (!(matches = route.match(method, uri))) continue;
+        if (isArray(route.callback)) {
           callbacks = route.callback;
         } else {
           callbacks = [route.callback];
