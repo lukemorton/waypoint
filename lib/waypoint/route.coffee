@@ -5,7 +5,10 @@ class Route
       uri = method
       method = 'GET'
 
-    @regex = regifyString(uri, {}) unless uri instanceof RegExp
+    if uri instanceof RegExp
+      @regex = uri
+    else
+      @regex = regifyString(uri, {})
 
     @method = method.toUpperCase()
     @callback = callback if callback?
