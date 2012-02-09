@@ -21,6 +21,7 @@ class Router
     else
       route = new Route(method, uri, callback)
     @routes.push(route)
+    return @
 
   get : (uri, callback) -> @route('GET',  uri, callback)
   post: (uri, callback) -> @route('POST', uri, callback)
@@ -31,9 +32,9 @@ class Router
     if matches and matches.length?
       [uri, method] = matches[1..2].reverse()
       method or= 'GET'
-      [uri, method]
+      return [uri, method]
     else
-      [uri or '', 'GET']
+      return [uri or '', 'GET']
   
   routeMap: (map, baseUri = @baseUri) ->
     for uri, callback of map
@@ -46,6 +47,8 @@ class Router
         @routeMap(callback, uri)
       else
         throw 'Map must be string array or object'
+
+    return @        
 
   dispatch: (method, uri, scope = {}) ->
     for route in @routes
@@ -60,6 +63,6 @@ class Router
       return true
 
     @notFound.call(scope) if @notFound?
-    false
+    return false
 
 exports.Router = Router

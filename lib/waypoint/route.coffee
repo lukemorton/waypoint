@@ -20,7 +20,7 @@ class Route
         mod = params[param](str)
         break if mod isnt str
     
-    if mod is str then '([a-zA-Z0-9-]+)' else mod
+    return if mod is str then '([a-zA-Z0-9-]+)' else mod
 
   regifyString = (str, params) ->
     if str.indexOf('*') isnt -1
@@ -30,7 +30,7 @@ class Route
       for capture in captures
         str = str.replace(capture, paramifyString(capture, params))
 
-    new RegExp("^#{str}$")
+    return new RegExp("^#{str}$")
 
   match: (method, uri) ->
     unless uri?
@@ -41,6 +41,6 @@ class Route
 
     matches = @regex.exec(uri)
     return matches[1..] if matches and matches.length?
-    no
+    return no
 
 exports.Route = Route
