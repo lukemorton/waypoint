@@ -65,5 +65,16 @@ task 'build', 'Create a browser edition of Waypoint', ->
       fs.writeFileSync "#{dist}/waypoint-#{version}.min.js", header + '\n' + code
       fs.writeFileSync "#{eg}/browser/js/waypoint.min.js", header + '\n' + code
 
+task 'watch', 'Build on modification', ->
+  waiting = false
+  fs.watch "#{lib}/waypoint", (event, filename) ->
+    return unless filename.indexOf('.coffee') > -1
+
+    if waiting
+      console.log('Waiting')
+    else
+      waiting = setTimeout((-> waiting = false), 2000)
+      invoke('build')
+
 task 'clean', 'Delete distribution folder', ->
   exec "rm -rf #{dist}"
