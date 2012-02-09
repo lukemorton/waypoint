@@ -16,7 +16,7 @@ class Router
     @routeMap(routeMap) if routeMap?
 
   route: (method, uri, callback) ->
-    if method instanceof Route
+    if typeof method is 'object'
       route = method
     else
       route = new Route(method, uri, callback)
