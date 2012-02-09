@@ -1,8 +1,7 @@
 Route = require('./route').Route
 
-unless Array.isArray
-  Array.isArray = (obj) ->
-    Object.prototype.toString.call(obj) is '[object Array]'
+isArray = Array.isArray
+isArray or= ((obj) -> Object.prototype.toString.call(obj) is '[object Array]')    
 
 class Router
   constructor: (config) ->
@@ -41,7 +40,7 @@ class Router
       [uri, method] = extractUriAndMethod(uri)
       uri = baseUri+uri
 
-      if typeof callback is 'function' or Array.isArray(callback)
+      if typeof callback is 'function' or isArray(callback)
         @route(method, uri, callback)
       else if typeof callback is 'object'
         @routeMap(callback, uri)
@@ -54,7 +53,7 @@ class Router
       unless matches
         continue
 
-      if Array.isArray(route.callback) 
+      if isArray(route.callback) 
         callbacks = route.callback
       else
         callbacks = [route.callback]
