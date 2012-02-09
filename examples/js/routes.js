@@ -4,7 +4,7 @@ var Route = Waypoint.Route;
 
 var router = new Router({
 	'routes' : [
-		new Route('/home/:a', function (a) {
+		new Route('GET', '/home/:a', function (a) {
 			console.log('root', a);
 		})
 	],

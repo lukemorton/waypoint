@@ -1,10 +1,5 @@
 class Route
   constructor: (method, uri, callback) ->
-    unless callback?
-      callback = uri
-      uri = method
-      method = 'GET'
-
     if uri instanceof RegExp
       @regex = uri
     else
