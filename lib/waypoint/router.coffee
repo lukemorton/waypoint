@@ -6,13 +6,14 @@ isArray or= ((obj) -> Object.prototype.toString.call(obj) is '[object Array]')
 class Router
   constructor: (config) ->
     if config
-      for key in ['routes', 'baseUri', 'notFound']
+      for key in ['routes', 'baseUri', 'notFound', 'multi']
         @[key] = config[key] if config[key]?
 
       routeMap = config.routeMap if config.routeMap?
       
     @routes  or= []
     @baseUri or= ''
+    @multi   or= no
     @routeMap(routeMap) if routeMap?
 
   route: (method, uri, callback) ->
@@ -51,8 +52,12 @@ class Router
     return @        
 
   dispatch: (method, uri, scope = {}) ->
+    hasMatched = no
+
     for route in @routes
       continue unless matches = route.match(method, uri)
+
+      hasMatched = yes
 
       if isArray(route.callback) 
         callbacks = route.callback
@@ -60,9 +65,10 @@ class Router
         callbacks = [route.callback]
 
       c.apply(scope, matches) for c in callbacks
-      return true
+      
+      break unless @multi
 
-    @notFound.call(scope) if @notFound?
-    return false
+    @notFound.call(scope) if @notFound? and hasMatched is no
+    return hasMatched
 
 module.exports = Router
