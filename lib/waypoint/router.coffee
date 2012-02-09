@@ -20,7 +20,7 @@ class Router
       route = method
     else
       route = new Route(method, uri, callback)
-    @routes.push route
+    @routes.push(route)
 
   get : (uri, callback) -> @route('GET',  uri, callback)
   post: (uri, callback) -> @route('POST', uri, callback)
@@ -49,18 +49,14 @@ class Router
 
   dispatch: (method, uri, scope = {}) ->
     for route in @routes
-      matches = route.match(method, uri)
-      unless matches
-        continue
+      continue unless matches = route.match(method, uri)
 
       if isArray(route.callback) 
         callbacks = route.callback
       else
         callbacks = [route.callback]
 
-      for c in callbacks
-        c.apply(scope, matches)
-
+      c.apply(scope, matches) for c in callbacks
       return true
 
     @notFound.call(scope) if @notFound?

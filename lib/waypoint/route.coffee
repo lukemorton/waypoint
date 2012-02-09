@@ -23,12 +23,10 @@ class Route
     if mod is str then '([a-zA-Z0-9-]+)' else mod
 
   regifyString = (str, params) ->
-    if str.indexOf '*' isnt -1
-      str = str.replace /\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)'
+    if str.indexOf('*') isnt -1
+      str = str.replace(/\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)')
     
-    captures = str.match(/:([^\/]+)/ig)
-        
-    if captures
+    if captures = str.match(/:([^\/]+)/ig)
       for capture in captures
         str = str.replace(capture, paramifyString(capture, params))
 
