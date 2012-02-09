@@ -60,6 +60,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
     
     exec "mkdir -p #{dist}", ->
       fs.writeFileSync "#{dist}/waypoint-#{version}.js", header + '\n' + code
+      fs.writeFileSync "#{eg}/browser/js/waypoint.js", header + '\n' + code
 
       code = uglify.gen_code uglify.ast_squeeze uglify.ast_mangle parser.parse code
       fs.writeFileSync "#{dist}/waypoint-#{version}.min.js", header + '\n' + code
