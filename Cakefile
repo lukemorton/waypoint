@@ -51,7 +51,7 @@ task 'build', 'Create a browser edition of Waypoint', ->
 
         return {
           'Route' : require('./route'),
-          'Router': require('./router'),
+          'Router': require('./router')
         };
       });
     """
