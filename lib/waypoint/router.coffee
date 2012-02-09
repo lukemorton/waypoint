@@ -12,8 +12,8 @@ class Router
       routeMap = config.routeMap if config.routeMap?
       
     @routes  or= []
-    @routeMap(routeMap) if routeMap?
     @baseUri or= ''
+    @routeMap(routeMap) if routeMap?
 
   route: (method, uri, callback) ->
     if method instanceof Route
