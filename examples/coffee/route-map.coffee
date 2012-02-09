@@ -22,8 +22,8 @@ router.routeMap
     -> console.log('redirected to', '/')
   ]
 
-router.dispatch '/'
-router.dispatch '/products'
-router.dispatch '/products/all'
-router.dispatch '/products/100'
-router.dispatch '/logout'
+router.dispatch('/')
+router.dispatch('/products')
+router.dispatch('/products/all')
+router.dispatch('/products/100')
+router.dispatch('/logout')
